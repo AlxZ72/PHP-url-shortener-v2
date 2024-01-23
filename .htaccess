@@ -1,0 +1,40 @@
+
+SetEnv DB_HOST _DBHOST_
+
+SetEnv DB_USER _USERNAME_
+
+SetEnv DB_NAME _DBNAME_
+
+SetEnv DB_PASSWORD _PASSWORD_
+
+
+
+<IfModule mod_rewrite.c>
+
+
+
+  RewriteEngine On
+
+
+
+  RewriteCond %{REQUEST_URI} ^.favicon.ico
+  RewriteRule ^(.*)$ static/images/favicon.ico [END]
+
+
+  RewriteCond %{REQUEST_URI} ^.*image/(.*)
+  RewriteRule ^(.*)$ static/images/%1 [END]
+
+  
+
+  RewriteCond %{REQUEST_URI} ^.*static/(.*)
+  RewriteRule ^(.*)$ static/%1 [END]
+
+
+
+  Options -Indexes
+
+  RewriteRule (.*)  entry.php [QSA]
+
+
+
+</IfModule>

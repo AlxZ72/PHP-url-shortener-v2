@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linkrövidítő</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-check{
+            padding-left: 0;
+        }
+
+        
+        footer{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: #394259;
+        }
+
+        footer div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            width: 100%;
+        }
+
+        a{
+            color: white;
+            font-weight: bold;
+        }
+
+        a:hover{
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        ul{
+            margin: 0;
+        }
+        
+        li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        li:last-child {
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="bg-primary text-white text-center p-3">
+        <h1>Logo</h1>
+        <p>Motto</p>
+        <button class="btn btn-light">Link shortener</button>
+    </header>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-md-6">
+                <p>Here comes the benefits of using this page...</p>
+            </div>
+            <div class="col-md-6">
+                <form id="linkShortenerForm">
+                    <div class="form-group">
+                        <label for="urlInput">Paste the link to be shortened here</label>
+                        <input type="url" class="form-control" id="urlInput" placeholder="Long URL here.." required>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="recaptchaCheck">
+                        <label class="form-check-label" for="recaptchaCheck">require reCAPTCHA</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="passwordCheck">
+                        <label class="form-check-label" for="passwordCheck">Require a password</label>
+                    </div>
+                    <div class="form-group" id="passwordField" style="display: none;">
+                        <label for="passwordInput">Password</label>
+                        <input type="text" class="form-control" id="passwordInput" Password="Jelszó">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="expiryCheck">
+                        <label class="form-check-label" for="expiryCheck">Expiry time setting</label>
+                        <input type="date" class="form-control mt-2" id="expiryDate" style="display: none; margin-bottom: 12px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Short</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+    // Display the expiration date field
+    $('#expiryCheck').change(function() {
+        if ($(this).is(':checked')) {
+            $('#expiryDate').show();
+        } else {
+            $('#expiryDate').hide();
+        }
+    });
+
+    $('#passwordCheck').change(function() {
+        if ($(this).is(':checked')) {
+            $('#passwordField').show();
+        } else {
+            $('#passwordField').hide();
+        }
+    });
+
+    // Submit form with AJAX
+    $('#linkShortenerForm').submit(function(event) {
+        event.preventDefault();
+
+        var data = {
+            url: $('#urlInput').val(),
+            recaptchaRequired: $('#recaptchaCheck').is(':checked'),
+            passwordRequired: $('#passwordCheck').is(':checked'),
+            password: $('#passwordCheck').is(':checked') ? $('#passwordInput').val() : null,
+            expiryDate: $('#expiryCheck').is(':checked') ? $('#expiryDate').val() : null
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/register-short',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                if (response.success) {
+                    // Handle a successful response
+                    prompt('Shortening of the link is successful!', response.response);
+                } else {
+                    // Handle error
+                    alert('An error occurred: ' + response.reason);
+                }
+            },
+            error: function() {
+                // Handle communication error
+                alert('An error occurred while communicating with the server.');
+            }
+        });
+    });
+});
+
+    </script>
+
+<footer>
+    <div>
+        <ul>
+            <li><a href="/p">Piracy</a></li>
+        </ul>
+        
+        
+    </div>
+</footer>
+
+</body>
+</html>
